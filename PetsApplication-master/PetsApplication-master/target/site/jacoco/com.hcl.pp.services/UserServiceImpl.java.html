@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PetsApp</a> &gt; <a href="index.source.html" class="el_package">com.hcl.pp.services</a> &gt; <span class="el_source">UserServiceImpl.java</span></div><h1>UserServiceImpl.java</h1><pre class="source lang-java linenums">package com.hcl.pp.services;
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.hcl.pp.beans.Pet;
+import com.hcl.pp.beans.User;
+import com.hcl.pp.models.UserModel;
+import com.hcl.pp.models.PetModel;
+import com.hcl.pp.repositories.PetRepository;
+import com.hcl.pp.repositories.UserRepository;
+
+@Service
+<span class="fc" id="L16">public class UserServiceImpl implements UserService {</span>
+	@Autowired
+	UserRepository userRepo;
+	@Autowired
+	PetRepository petRepository;
+<span class="fc" id="L21">	UserModel userModel = null;</span>
+	
+	public String addUsers(User user) {
+<span class="nc" id="L24">		userModel = new UserModel();</span>
+<span class="nc" id="L25">		BeanUtils.copyProperties(user, userModel);</span>
+<span class="nc" id="L26">		userRepo.save(userModel);</span>
+<span class="nc" id="L27">		return &quot;User added Succcessfully&quot;;</span>
+	}
+		@Override
+		public String buyPets(int petId,int userId) {
+<span class="nc" id="L31">			PetModel petModel = new PetModel();</span>
+<span class="nc" id="L32">			petModel = petRepository.findById(petId).get();</span>
+<span class="nc" id="L33">			userModel = userRepo.findById(userId).orElse(null);</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">			if(userModel == null) {</span>
+<span class="nc" id="L35">				return &quot;Please add user before purchase any pet&quot;;</span>
+			}
+<span class="nc bnc" id="L37" title="All 2 branches missed.">			if(petModel.getPetOwnerID() ==0 ) {</span>
+<span class="nc" id="L38">				petModel.setPetOwnerID(userId);</span>
+<span class="nc" id="L39">				petRepository.save(petModel);</span>
+<span class="nc" id="L40">				return &quot;Pet bought successfully&quot;;</span>
+							
+			}	else {	
+<span class="nc" id="L43">			return (&quot;Unable to buy pet for user : &quot;+ userId);	</span>
+			}
+			
+		}	
+		@SuppressWarnings(&quot;unchecked&quot;)
+		@Override
+		public List&lt;Pet&gt; myPets(int userId) {
+<span class="nc" id="L50">			List&lt;PetModel&gt; petModelList = null;</span>
+<span class="nc" id="L51">			List&lt;PetModel&gt; petModelListFinal = null;</span>
+<span class="nc" id="L52">			List&lt;Pet&gt; petsDtolist = null;</span>
+<span class="nc" id="L53">			petModelList = petRepository.findAllByCustomerId(userId);</span>
+<span class="nc" id="L54">			return petsDtolist;</span>
+			
+		}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.0.201801022044</span></div></body></html>
